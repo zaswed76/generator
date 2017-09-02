@@ -214,7 +214,7 @@ class Widget(tool.WidgetToolPanel):
         self.controls = dict()
         # region main_view
         self.scene = base_view.Scene((0, 0, 500, 500), self.cfg_base,
-                                     IMAGE_DIR)
+                                     IMAGE_DIR, parent=self)
         self.games["base_game"] = base_view.View("base_game",
                                                  self.scene, self,
                                                  (504, 504))

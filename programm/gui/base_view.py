@@ -11,6 +11,7 @@ class Item(QtCore.QObject):
 class GraphicsText(QtWidgets.QGraphicsTextItem):
     def __init__(self, name, scene):
         super().__init__()
+        self.name = name
         self.scene = scene
         self.setDefaultTextColor(QtGui.QColor('darkgrey'))
         font = QtGui.QFont()
@@ -19,6 +20,7 @@ class GraphicsText(QtWidgets.QGraphicsTextItem):
         font.setWeight(63)
         self.setFont(font)
         self.setPlainText(name)
+
 
     @property
     def width(self):
@@ -51,6 +53,7 @@ class GraphicsImage(QtWidgets.QGraphicsPixmapItem):
         self.setPixmap(self._pixmap)
         self.setTransformationMode(
             QtCore.Qt.SmoothTransformation)
+        self.setFlag(QtWidgets.QGraphicsPixmapItem.ItemIsMovable)
 
 
     @property
@@ -102,13 +105,13 @@ class Scene(QtWidgets.QGraphicsScene):
         name = str(name)
         if fabric == 'image_mode_btn':
             path = self.path_to_image(name)
-            obj = GraphicsImage(path, name, self)
+            self.obj = GraphicsImage(path, name, self)
         elif fabric == 'text_mode_btn':
-            obj = GraphicsText(name, self)
+            self.obj = GraphicsText(name, self)
         else:
             raise Exception("нет такого режима")
-        obj.to_center()
-        self.addItem(obj)
+        self.obj.to_center()
+        self.addItem(self.obj)
 
     def draw_help(self, name, fabric):
         name = str(name)
@@ -126,11 +129,11 @@ class Scene(QtWidgets.QGraphicsScene):
 
     def draw_finish(self):
         self.clear()
-        obj = GraphicsText("FINISH", self)
+        self.obj = GraphicsText("FINISH", self)
         font = QtGui.QFont("helvetica", 50)
-        obj.setFont(font)
-        obj.to_center()
-        self.addItem(obj)
+        self.obj.setFont(font)
+        self.obj.to_center()
+        self.addItem(self.obj)
 
     def del_help_obj(self):
         self.removeItem(self.help_obj)
@@ -138,6 +141,14 @@ class Scene(QtWidgets.QGraphicsScene):
     def path_to_image(self, name):
         p = os.path.join(self.image_dir, name + self.cfg["ext"])
         return p
+
+    def mouseReleaseEvent(self, e):
+        if self.obj.name != "FINISH":
+            pos = self.obj.pos()
+            x = pos.x()
+            if x > 41:
+                self.parent.next_item()
+
 
 
 class View(QtWidgets.QGraphicsView):

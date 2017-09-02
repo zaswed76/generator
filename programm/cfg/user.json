@@ -1,7 +1,7 @@
 {
     "base": {
-        "image_mode_btn": false,
-        "text_mode_btn": true,
+        "image_mode_btn": true,
+        "text_mode_btn": false,
         "ext": ".png",
         "tool_height": 30,
         "cycle": false,
@@ -15,7 +15,7 @@
         "time": false,
         "alt_1_enabled": false,
         "grid": false,
-        "interval_slides": 1
+        "interval_slides": 2
     },
     "game_tool": {
         "width": 35,
