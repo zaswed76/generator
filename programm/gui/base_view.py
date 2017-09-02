@@ -148,6 +148,8 @@ class Scene(QtWidgets.QGraphicsScene):
             x = pos.x()
             if x > 41:
                 self.parent.next_item()
+                if self.parent.timer.isActive():
+                    self.parent.timer.start()
 
 
 
