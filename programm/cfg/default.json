@@ -1,0 +1,33 @@
+
+{
+    "base": {
+        "item_flag": "image_mode",
+        "ext": ".png",
+        "tool_height": 30,
+        "cycle": true,
+        "cursor": -1,
+        "shuffle": false,
+        "game_name": "one_image"
+    },
+    "game_panel": {
+        "width": 35,
+        "btn_exclusive": false,
+        "button_size": [
+            25,
+            25
+        ],
+        "btn_checked": {
+            "0": false,
+            "10": false,
+            "20": false,
+            "30": false,
+            "40": false,
+            "50": true,
+            "60": false,
+            "70": false,
+            "80": false,
+            "90": false,
+            "keys": false
+        }
+    }
+}
