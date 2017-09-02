@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>275</width>
-    <height>89</height>
+    <width>283</width>
+    <height>114</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Dialog</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -25,7 +25,7 @@
         <number>10</number>
        </property>
        <property name="value">
-        <number>1</number>
+        <number>0</number>
        </property>
        <property name="sliderPosition">
         <number>0</number>
@@ -56,10 +56,36 @@
      </property>
     </widget>
    </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>
  <connections>
+  <connection>
+   <sender>slider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>lcd</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>100</x>
+     <y>31</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>216</x>
+     <y>33</y>
+    </hint>
+   </hints>
+  </connection>
   <connection>
    <sender>slider</sender>
    <signal>sliderMoved(int)</signal>
@@ -67,12 +93,44 @@
    <slot>display(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>98</x>
-     <y>33</y>
+     <x>63</x>
+     <y>31</y>
     </hint>
     <hint type="destinationlabel">
-     <x>220</x>
-     <y>34</y>
+     <x>216</x>
+     <y>33</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>Dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>159</x>
+     <y>94</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>133</x>
+     <y>46</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>Dialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>97</x>
+     <y>92</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>65</x>
+     <y>-16</y>
     </hint>
    </hints>
   </connection>

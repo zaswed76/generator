@@ -241,8 +241,14 @@ class Widget(tool.WidgetToolPanel):
         self.set_start_opt()
 
     def set_time(self):
-        self.set_time_window = gui_settings.set_time()
-        self.set_time_window.show()
+        interval = self.cfg_base["interval_slides"]
+        self.set_time_window = gui_settings.SetTime(interval)
+        result = self.set_time_window.exec_()
+        if result == QtWidgets.QDialog.Accepted:
+            interval = self.set_time_window.slider.value()
+            self.cfg_base["interval_slides"] = interval
+        elif result == QtWidgets.QDialog.Rejected:
+            pass
 
     def timerEvent(self, *args, **kwargs):
         self.next_item()

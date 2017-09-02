@@ -17,7 +17,7 @@ def save(path, obj):
         json.dump(obj, path)
 
 
-geometry = load_cfg(GEOMETRY_CFG)
+
 
 
 class View(QtWidgets.QGraphicsView):

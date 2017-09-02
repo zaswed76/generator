@@ -14,7 +14,8 @@
         "test": false,
         "time": false,
         "alt_1_enabled": false,
-        "grid": false
+        "grid": false,
+        "interval_slides": 8
     },
     "game_tool": {
         "width": 35,
