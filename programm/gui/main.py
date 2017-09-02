@@ -10,7 +10,8 @@ from PyQt5.QtCore import QObject
 from logic import logic
 from gui import (base_view, config, tool,
                  game_tool, alt_view,
-                 grid_view, gui_settings)
+                 grid_view, gui_settings,
+                 timer)
 
 IMAGE_DIR = '../resource/image'
 UI_DIR = '../gui/ui'
@@ -142,10 +143,11 @@ class ToolController(QObject):
     def time(self, **args):
         flag = self.parent.tools["top_tool"].btn['time'].isChecked()
         if flag:
-            self.parent.timer_1 = self.parent.startTimer(2000)
+            time = self.parent.cfg_base["interval_slides"] * 1000
+            self.parent.start_timer(time)
         else:
             try:
-                self.parent.killTimer(self.parent.timer_1)
+                self.parent.timer.stop()
             except AttributeError as er:
                 print(er)
 
@@ -205,6 +207,8 @@ class Widget(tool.WidgetToolPanel):
 
         self.__init_config()
         self.timer_flag = False
+        self.timer = timer.Timer()
+        self.timer.timeout.connect(self.update_timer)
 
         self.games = dict()
         self.controls = dict()
@@ -249,9 +253,6 @@ class Widget(tool.WidgetToolPanel):
             self.cfg_base["interval_slides"] = interval
         elif result == QtWidgets.QDialog.Rejected:
             pass
-
-    def timerEvent(self, *args, **kwargs):
-        self.next_item()
 
     def set_start_opt(self):
         self.start_flag = False
@@ -377,8 +378,8 @@ class Widget(tool.WidgetToolPanel):
 
         # инициировать состояние кнопок
         for name, btn in self.tools["top_tool"].all_btns.items():
-            c = self.cfg_base.get(name, False)
             btn.setChecked(self.cfg_base.get(name, False))
+            self.tools["top_tool"].btn['time'].setChecked(False)
 
 
 
@@ -408,14 +409,28 @@ class Widget(tool.WidgetToolPanel):
     def note_time(self):
         self.current_time = time.time()
 
+    def start_timer(self, interval):
+        self.timer.start(interval)
+
+    def update_timer(self):
+        self.next_item()
+
+
     def next_item(self):
         item, game_go_flag = self.seq.next()
+
         if game_go_flag:
             self.scene.draw(item, self.current_mod)
             if self.help:
                 self.draw_help()
         else:
+
             self.scene.draw_finish()
+            if self.timer.isActive():
+                self.timer.stop()
+                self.tools["top_tool"].btn['time'].setChecked(False)
+
+
 
     def prev_item(self):
         item, game_go_flag = self.seq.prev()

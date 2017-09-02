@@ -1,12 +1,12 @@
 {
     "base": {
-        "image_mode_btn": true,
-        "text_mode_btn": false,
+        "image_mode_btn": false,
+        "text_mode_btn": true,
         "ext": ".png",
         "tool_height": 30,
         "cycle": false,
         "cursor": 0,
-        "shuffle": true,
+        "shuffle": false,
         "game_id": 0,
         "base_game": true,
         "alt_1": false,
@@ -15,7 +15,7 @@
         "time": false,
         "alt_1_enabled": false,
         "grid": false,
-        "interval_slides": 8
+        "interval_slides": 1
     },
     "game_tool": {
         "width": 35,
@@ -25,14 +25,14 @@
             25
         ],
         "btn_checked": {
-            "0": false,
+            "0": true,
             "10": false,
             "20": false,
             "30": false,
             "40": false,
             "50": false,
             "60": false,
-            "70": true,
+            "70": false,
             "80": false,
             "90": false,
             "K": false
