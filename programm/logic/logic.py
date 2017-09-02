@@ -68,6 +68,7 @@ class Seq(dict):
         else:
             self.items_weight = items_weight
         self.work_list = []
+        self.penalty_list = []
         self.cursor = -1
         self.update({n: Item(n) for n in seq})
 

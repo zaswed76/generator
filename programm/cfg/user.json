@@ -6,7 +6,7 @@
         "tool_height": 30,
         "cycle": false,
         "cursor": 0,
-        "shuffle": false,
+        "shuffle": true,
         "game_id": 0,
         "base_game": true,
         "alt_1": false,
@@ -25,7 +25,7 @@
             25
         ],
         "btn_checked": {
-            "0": true,
+            "0": false,
             "10": false,
             "20": false,
             "30": false,
@@ -33,7 +33,7 @@
             "50": false,
             "60": false,
             "70": false,
-            "80": false,
+            "80": true,
             "90": false,
             "K": false
         }

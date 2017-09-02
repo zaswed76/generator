@@ -415,6 +415,11 @@ class Widget(tool.WidgetToolPanel):
     def update_timer(self):
         self.next_item()
 
+    def add_to_penalty(self, name):
+        self.seq.penalty_list.append(name)
+
+    def clear_penalty(self):
+        self.seq.penalty_list.clear()
 
     def next_item(self):
         item, game_go_flag = self.seq.next()
