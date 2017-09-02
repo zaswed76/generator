@@ -14,9 +14,7 @@ from gui import (base_view, config, tool,
 
 IMAGE_DIR = '../resource/image'
 UI_DIR = '../gui/ui'
-# IMAGE_DIR_KEY = '../resource/images_key'
 IMAGE_DIR_KEY = '../resource/images_key_2'
-# ICON_DIR = '../resource/icons'
 ICON_DIR = '../resource/icon_2'
 DEFAULT_CFG = '../cfg/default.json'
 INIT_GAME = '../cfg/init_game.json'
