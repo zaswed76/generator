@@ -151,6 +151,9 @@ class ToolController(QObject):
             except AttributeError as er:
                 print(er)
 
+    def penalty(self, **args):
+        print("penalty")
+
     def check_game(self, **args):
         sender = self.sender()
         id = self.parent.games.index(sender.objectName())
@@ -342,6 +345,11 @@ class Widget(tool.WidgetToolPanel):
         time.add_setting_btn(set_time_btn)
         time.clicked.connect(self.controls["top_tool"])
         self.tools["top_tool"].add_btn(time)
+
+        penalty = tool.Button(self.tools["top_tool"], "penalty",
+                           checkable=True)
+        penalty.clicked.connect(self.controls["top_tool"])
+        self.tools["top_tool"].add_btn(penalty)
 
         self.tools["top_tool"].add_stretch(1)
         # region games

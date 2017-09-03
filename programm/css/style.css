@@ -153,6 +153,11 @@ Button#time {
 Button#time:checked {
     image: url(../resource/icons/time.png);  }
 
+Button#penalty {
+    image: url(../resource/icons/penalty.png);  }
+
+Button#penalty:checked {
+    image: url(../resource/icons/penalty.png);  }
 
 Button#image_mode_btn {
     image: url(../resource/icons/image_mode_btn.png);  }
