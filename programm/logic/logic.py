@@ -62,6 +62,7 @@ class Seq(dict):
         self._shuffle = False
         self._cycle = False
         self._current_item = None
+        self._last_item = None
         self.game_go = False
         if items_weight is None:
             self.items_weight = dict()
@@ -102,6 +103,7 @@ class Seq(dict):
                 self.cursor += 1
         try:
             self._current_item = self.work_list[self.cursor]
+            self._last_item = self.work_list[self.cursor-1]
         except IndexError:
             self.game_go = False
             if self.shuffle:
@@ -118,8 +120,13 @@ class Seq(dict):
     def add_seq(self, seq):
         self.update({n: Item(n) for n in seq})
 
+    @property
     def current_item(self):
         return self._current_item
+
+    @property
+    def last_item(self):
+        return self._last_item
 
     @property
     def cycle(self):
@@ -151,7 +158,7 @@ class Seq(dict):
         self.cursor = -1
 
     def add_to_penalty(self, name):
-        if not name in self.penalty_list:
+        if not name in self.penalty_list and name != "FINISH":
             self.penalty_list.append(name)
 
     def clear_penalty(self):

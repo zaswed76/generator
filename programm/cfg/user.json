@@ -15,7 +15,7 @@
         "time": false,
         "alt_1_enabled": false,
         "grid": false,
-        "interval_slides": 3,
+        "interval_slides": 2,
         "penalty": true
     },
     "game_tool": {

@@ -143,12 +143,14 @@ class ToolController(QObject):
     def time(self, **args):
         flag = self.parent.tools["top_tool"].btn['time'].isChecked()
         if flag:
+            self.parent.penalty_release_flag = False
             time = self.parent.cfg_base["interval_slides"] * 1000
             self.parent.start_timer(time)
             self.parent.games["base_game"].setInteractive(True)
 
         else:
             try:
+                self.parent.penalty_release_flag = True
                 self.parent.timer.stop()
                 self.parent.games["base_game"].setInteractive(False)
             except AttributeError as er:
@@ -216,7 +218,7 @@ class Widget(tool.WidgetToolPanel):
 
         self.__init_config()
         self.timer_flag = False
-        self.penalty_release_flag = False
+        self.penalty_release_flag = True
         self.timer = timer.Timer()
         self.timer.timeout.connect(self.update_timer)
 
@@ -256,6 +258,10 @@ class Widget(tool.WidgetToolPanel):
         self.current_mod = self.get_game_mode()
         self.help = self.cfg_base["help"]
         self.set_start_opt()
+
+    @property
+    def current_scene(self) ->QtWidgets.QGraphicsScene:
+        return self.stack.currentWidget()
 
     def set_time(self):
         interval = self.cfg_base["interval_slides"]
@@ -438,20 +444,23 @@ class Widget(tool.WidgetToolPanel):
         self.next_item()
 
 
-
-
-
     def next_item(self):
         item, game_go_flag = self.seq.next()
-
+        scene_items = self.current_scene.items()
+        if scene_items:
+            scene_item = scene_items[0].name
         if game_go_flag:
-            self.scene.draw(item, self.current_mod)
             if not self.penalty_release_flag:
-                self.seq.add_to_penalty(item)
+
+                self.seq.add_to_penalty(scene_item)
+            self.scene.draw(item, self.current_mod)
+
             if self.help:
                 self.draw_help()
         else:
+            if not self.penalty_release_flag:
 
+                self.seq.add_to_penalty(scene_item)
             self.scene.draw_finish()
             print(self.seq.penalty_list)
             if self.timer.isActive():
@@ -468,7 +477,7 @@ class Widget(tool.WidgetToolPanel):
                 self.draw_help()
 
     def draw_help(self):
-        self.scene.draw_help(self.seq.current_item().value, self.current_mod)
+        self.scene.draw_help(self.seq.current_item.value, self.current_mod)
 
     def keyPressEvent(self, e):
         if e.key() == QtCore.Qt.Key_Space:
