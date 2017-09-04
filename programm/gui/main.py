@@ -145,14 +145,20 @@ class ToolController(QObject):
         if flag:
             time = self.parent.cfg_base["interval_slides"] * 1000
             self.parent.start_timer(time)
+            self.parent.games["base_game"].setInteractive(True)
+
         else:
             try:
                 self.parent.timer.stop()
+                self.parent.games["base_game"].setInteractive(False)
             except AttributeError as er:
                 print(er)
 
     def penalty(self, **args):
         print("penalty")
+
+    def del_penalty(self, **args):
+        self.parent.seq.clear_penalty()
 
     def check_game(self, **args):
         sender = self.sender()
@@ -210,6 +216,7 @@ class Widget(tool.WidgetToolPanel):
 
         self.__init_config()
         self.timer_flag = False
+        self.penalty_release_flag = False
         self.timer = timer.Timer()
         self.timer.timeout.connect(self.update_timer)
 
@@ -221,6 +228,7 @@ class Widget(tool.WidgetToolPanel):
         self.games["base_game"] = base_view.View("base_game",
                                                  self.scene, self,
                                                  (504, 504))
+        self.games["base_game"].setInteractive(False)
         self.add_view(self.games["base_game"])
         # endregion
 
@@ -229,6 +237,8 @@ class Widget(tool.WidgetToolPanel):
                                         self.cfg_base, IMAGE_DIR_KEY)
         self.games["alt_1"] = alt_view.View("alt_1", self.alt_scene,
                                             self, (504, 504))
+        self.games["alt_1"].setInteractive(False)
+
         self.add_view(self.games["alt_1"])
         # endregion
 
@@ -349,6 +359,9 @@ class Widget(tool.WidgetToolPanel):
         penalty = tool.Button(self.tools["top_tool"], "penalty",
                            checkable=True)
         penalty.clicked.connect(self.controls["top_tool"])
+        del_penalty = tool.SetBtn((16, 16), name="del_penalty")
+        del_penalty.clicked.connect(self.controls["top_tool"])
+        penalty.add_setting_btn(del_penalty)
         self.tools["top_tool"].add_btn(penalty)
 
         self.tools["top_tool"].add_stretch(1)
@@ -421,24 +434,26 @@ class Widget(tool.WidgetToolPanel):
         self.timer.start(interval)
 
     def update_timer(self):
+        self.penalty_release_flag = False
         self.next_item()
 
-    def add_to_penalty(self, name):
-        self.seq.penalty_list.append(name)
 
-    def clear_penalty(self):
-        self.seq.penalty_list.clear()
+
+
 
     def next_item(self):
         item, game_go_flag = self.seq.next()
 
         if game_go_flag:
             self.scene.draw(item, self.current_mod)
+            if not self.penalty_release_flag:
+                self.seq.add_to_penalty(item)
             if self.help:
                 self.draw_help()
         else:
 
             self.scene.draw_finish()
+            print(self.seq.penalty_list)
             if self.timer.isActive():
                 self.timer.stop()
                 self.tools["top_tool"].btn['time'].setChecked(False)

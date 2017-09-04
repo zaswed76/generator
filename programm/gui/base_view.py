@@ -147,6 +147,7 @@ class Scene(QtWidgets.QGraphicsScene):
             pos = self.obj.pos()
             x = pos.x()
             if x > 41:
+                self.parent.penalty_release_flag = True
                 self.parent.next_item()
                 if self.parent.timer.isActive():
                     self.parent.timer.start()
@@ -159,6 +160,7 @@ class View(QtWidgets.QGraphicsView):
         self.setObjectName(name)
         self.setScene(scene)
         self.setFixedSize(size[0], size[1])
+
 
     def wheelEvent(self, event):
         pass

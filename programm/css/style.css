@@ -76,7 +76,7 @@ Button:checked {
 
 }
 
-SetBtn {
+SetBtn#set_time {
     image: url(../resource/icons/set_btn_in.png);
     border-top: none;
     border-right: none;
@@ -85,14 +85,32 @@ SetBtn {
 
 }
 
-SetBtn:hover {
+SetBtn#set_time:hover {
     image: url(../resource/icons/set_btn_in_hover.png);
     border-top: none;
     border-right: none;
     border-bottom: none;
     border-left: none;
 
+
 }
+
+SetBtn#del_penalty {
+    image: url(../resource/icons/del_penalty.png);
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    border-left: none;
+
+}
+
+SetBtn#del_penalty:hover {
+    image: url(../resource/icons/del_penalty_hover.png);
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    border-left: none;}
+
 
 Button:disabled {
     border: 1px solid #b9b9b9;

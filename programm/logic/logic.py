@@ -88,7 +88,7 @@ class Seq(dict):
             self.work_list.extend(self._get_ten(ten))
 
 
-    def next(self):
+    def next(self)->tuple:
         self.game_go = True
         if self._cycle:
             if self.cursor == len(self.work_list) - 2:
@@ -150,8 +150,12 @@ class Seq(dict):
     def cursor_reset(self):
         self.cursor = -1
 
+    def add_to_penalty(self, name):
+        if not name in self.penalty_list:
+            self.penalty_list.append(name)
 
-
+    def clear_penalty(self):
+        self.penalty_list.clear()
 
 
 
