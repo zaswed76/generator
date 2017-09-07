@@ -8,8 +8,8 @@
         "cursor": 0,
         "shuffle": false,
         "game_id": 0,
-        "base_game": true,
-        "alt_1": false,
+        "base_game": false,
+        "alt_1": true,
         "help": false,
         "test": false,
         "time": false,
@@ -26,7 +26,7 @@
             25
         ],
         "btn_checked": {
-            "0": true,
+            "0": false,
             "10": false,
             "20": false,
             "30": false,
@@ -35,7 +35,7 @@
             "60": false,
             "70": false,
             "80": false,
-            "90": false,
+            "90": true,
             "K": false
         }
     }

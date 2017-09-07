@@ -480,13 +480,17 @@ class Widget(tool.WidgetToolPanel):
         self.scene.draw_help(self.seq.current_item.value, self.current_mod)
 
     def keyPressEvent(self, e):
+
         if e.key() == QtCore.Qt.Key_Space:
             if not e.isAutoRepeat():
                 self.draw_help()
 
     def keyReleaseEvent(self, e):
+
         if e.key() == QtCore.Qt.Key_Space:
+            print("del")
             if not e.isAutoRepeat():
+                print("del")
                 self.scene.del_help_obj()
 
     def chenge_time(self):

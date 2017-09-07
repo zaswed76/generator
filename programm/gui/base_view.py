@@ -164,7 +164,8 @@ class View(QtWidgets.QGraphicsView):
 
     def wheelEvent(self, event):
         pass
-
+    # def keyPressEvent(self, e):
+    #     pass
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
