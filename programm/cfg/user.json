@@ -6,7 +6,7 @@
         "tool_height": 30,
         "cycle": false,
         "cursor": 0,
-        "shuffle": false,
+        "shuffle": true,
         "game_id": 0,
         "base_game": false,
         "alt_1": true,
