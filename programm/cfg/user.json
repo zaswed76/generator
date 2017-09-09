@@ -13,20 +13,20 @@
         "help": false,
         "test": false,
         "time": false,
-        "alt_1_enabled": false,
+        "alt_1_enabled": true,
         "grid": false,
-        "interval_slides": 2,
-        "penalty": true
+        "interval_slides": 3,
+        "penalty": false
     },
     "game_tool": {
         "width": 35,
-        "exclusive": true,
+        "exclusive": false,
         "button_size": [
             25,
             25
         ],
         "btn_checked": {
-            "0": false,
+            "0": true,
             "10": false,
             "20": false,
             "30": false,
@@ -35,8 +35,9 @@
             "60": false,
             "70": false,
             "80": false,
-            "90": true,
+            "90": false,
             "K": false
         }
-    }
+    },
+    "penalty_list": []
 }

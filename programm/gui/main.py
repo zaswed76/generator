@@ -157,10 +157,10 @@ class ToolController(QObject):
                 print(er)
 
     def penalty(self, **args):
-        print("penalty")
+        self.parent.start_penalty_list()
 
     def del_penalty(self, **args):
-        self.parent.seq.clear_penalty()
+        self.parent.clear_penalty()
 
     def check_game(self, **args):
         sender = self.sender()
@@ -252,6 +252,7 @@ class Widget(tool.WidgetToolPanel):
 
         seq = range(100)
         self.seq = logic.Seq(seq)
+        self.seq.extend_penalty(self.cfg.conf["penalty_list"])
 
         self.tools = {}
         self.mode_names = ["image_mode_btn", "text_mode_btn"]
@@ -417,16 +418,28 @@ class Widget(tool.WidgetToolPanel):
         self.seq.cycle = self.tools["top_tool"].btn["cycle"].isChecked()
         btns_checked = self.tools["game"].btns_checked_group(
             "group_seq_game")
-
         btns_name = [k for k, v in btns_checked.items() if v]
-        # print(btns_name, "btn")
-
         self.seq.init_tens(btns_name)
-
-        self.seq.cursor_reset()
         self.seq.set_shuffle(self.tools["top_tool"].btn["shuffle"].isChecked())
-        self.scene.clear()
-        self.next_item()
+        self.game_reset()
+
+    def start_penalty_list(self):
+        if self.seq.penalty_list:
+            if self.tools["top_tool"].btn["penalty"].isChecked():
+                self.seq.init_penalty_list()
+                self.seq.set_shuffle(self.tools["top_tool"].btn["shuffle"].isChecked())
+                self.game_reset()
+            else:
+                self.new_game()
+
+    def clear_penalty(self):
+        self.seq.clear_penalty()
+        self.seq.clear()
+        self.new_game()
+        self.tools["top_tool"].btn["penalty"].setChecked(False)
+        self.tools["top_tool"].btn["penalty"].setDisabled(True)
+
+
 
     def game_reset(self):
         self.seq.cursor_reset()
@@ -449,10 +462,12 @@ class Widget(tool.WidgetToolPanel):
         scene_items = self.current_scene.items()
         if scene_items:
             scene_item = scene_items[0].name
+        else:
+            scene_item = None
         if game_go_flag:
-            if not self.penalty_release_flag:
+            if not self.penalty_release_flag and scene_item:
 
-                self.seq.add_to_penalty(scene_item)
+                self.seq.append_penalty(scene_item)
             self.scene.draw(item, self.current_mod)
 
             if self.help:
@@ -460,14 +475,19 @@ class Widget(tool.WidgetToolPanel):
         else:
             if not self.penalty_release_flag:
 
-                self.seq.add_to_penalty(scene_item)
+                self.seq.append_penalty(scene_item)
             self.scene.draw_finish()
-            print(self.seq.penalty_list)
             if self.timer.isActive():
                 self.timer.stop()
                 self.tools["top_tool"].btn['time'].setChecked(False)
+                self.games["base_game"].setInteractive(False)
 
+        if self.seq.penalty_list:
 
+            self.tools["top_tool"].btn["penalty"].setDisabled(False)
+        else:
+
+            self.tools["top_tool"].btn["penalty"].setDisabled(True)
 
     def prev_item(self):
         item, game_go_flag = self.seq.prev()
@@ -519,6 +539,7 @@ class Widget(tool.WidgetToolPanel):
         self.cfg.save(self.init_conf["last_cfg"])
 
     def update_cfg(self):
+        self.tools["top_tool"].btn["penalty"].setChecked(False)
         btns_checked = self.tools["game"].btns_checked_group(
             "group_seq_game")
         self.cfg_game_tool["btn_checked"].update(btns_checked)
@@ -535,6 +556,10 @@ class Widget(tool.WidgetToolPanel):
 
         alt_1_enabled = self.tools["top_tool"].groups["group_games"].btn["alt_1"].isEnabled()
         self.cfg_base["alt_1_enabled"] = not alt_1_enabled
+
+        penalty_list_values = [n.value for n in self.seq.penalty_list]
+        self.cfg.conf["penalty_list"].clear()
+        self.cfg.conf["penalty_list"].extend(penalty_list_values)
 
 
 

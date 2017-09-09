@@ -83,11 +83,19 @@ class Seq(dict):
 
         return lst
 
+    def clear(self):
+        self.work_list.clear()
+
+
     def init_tens(self, tens):
         self.work_list.clear()
         for ten in tens:
             self.work_list.extend(self._get_ten(ten))
 
+    def init_penalty_list(self):
+        self.work_list.clear()
+
+        self.work_list.extend(self.penalty_list)
 
     def next(self)->tuple:
         self.game_go = True
@@ -157,9 +165,13 @@ class Seq(dict):
     def cursor_reset(self):
         self.cursor = -1
 
-    def add_to_penalty(self, name):
+    def append_penalty(self, name):
         if not name in self.penalty_list and name != "FINISH":
-            self.penalty_list.append(name)
+            self.penalty_list.append(Item(name))
+
+    def extend_penalty(self, penalty_lst=None):
+        penalty_item_list = [Item(x) for x in penalty_lst]
+        self.penalty_list.extend(penalty_item_list)
 
     def clear_penalty(self):
         self.penalty_list.clear()
