@@ -1,4 +1,7 @@
-for x in range(0, 10):
-   for y in range(0, 10):
-       print('{0} x {1} = {2}'.format(x, y, x*y),end='\t')
-   print("")
+
+
+from tempita import looper
+lp = looper([1, 2, 3])
+
+for i in lp:
+    print(i.item)
