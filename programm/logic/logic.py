@@ -166,8 +166,9 @@ class Seq(dict):
         self.cursor = -1
 
     def append_penalty(self, name):
-        if not name in self.penalty_list and name != "FINISH":
-            self.penalty_list.append(Item(name))
+        item = Item(name)
+        if not item in self.penalty_list and name != "FINISH":
+            self.penalty_list.append(item)
 
     def extend_penalty(self, penalty_lst=None):
         penalty_item_list = [Item(x) for x in penalty_lst]

@@ -12,10 +12,10 @@
         "alt_1": true,
         "help": false,
         "test": false,
-        "time": false,
+        "time": true,
         "alt_1_enabled": true,
         "grid": false,
-        "interval_slides": 3,
+        "interval_slides": 2,
         "penalty": false
     },
     "game_tool": {
@@ -26,10 +26,10 @@
             25
         ],
         "btn_checked": {
-            "0": true,
+            "0": false,
             "10": false,
             "20": false,
-            "30": false,
+            "30": true,
             "40": false,
             "50": false,
             "60": false,
@@ -39,5 +39,9 @@
             "K": false
         }
     },
-    "penalty_list": []
+    "penalty_list": [
+        "34",
+        "38",
+        "31"
+    ]
 }
