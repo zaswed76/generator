@@ -70,6 +70,9 @@ class PenaltyList():
     def extend(self, iterable):
         self.lst.extend(iterable)
 
+    def clear(self):
+        self.lst.clear()
+
     def lst_values(self):
         if self.lst:
             return [x.value for x in self.lst]

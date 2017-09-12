@@ -6,30 +6,30 @@
         "tool_height": 30,
         "cycle": false,
         "cursor": 0,
-        "shuffle": false,
+        "shuffle": true,
         "game_id": 0,
         "base_game": false,
         "alt_1": true,
         "help": false,
         "test": false,
-        "time": true,
-        "alt_1_enabled": false,
+        "time": false,
+        "alt_1_enabled": true,
         "grid": false,
-        "interval_slides": 1,
+        "interval_slides": 4,
         "penalty": false
     },
     "game_tool": {
         "width": 35,
-        "exclusive": true,
+        "exclusive": false,
         "button_size": [
             25,
             25
         ],
         "btn_checked": {
             "0": true,
-            "10": false,
-            "20": false,
-            "30": false,
+            "10": true,
+            "20": true,
+            "30": true,
             "40": false,
             "50": false,
             "60": false,
@@ -39,16 +39,5 @@
             "K": false
         }
     },
-    "penalty_list": [
-        "0",
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9"
-    ]
+    "penalty_list": []
 }
