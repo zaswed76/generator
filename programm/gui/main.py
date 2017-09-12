@@ -558,6 +558,7 @@ class Widget(tool.WidgetToolPanel):
         self.cfg_base["alt_1_enabled"] = not alt_1_enabled
 
         penalty_list_values = [n.value for n in self.seq.penalty_list]
+        print(self.seq.penalty_list, 99999)
         self.cfg.conf["penalty_list"].clear()
         self.cfg.conf["penalty_list"].extend(penalty_list_values)
 

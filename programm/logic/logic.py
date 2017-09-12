@@ -39,21 +39,53 @@ class Item:
         if self.weight > self.wmin:
             self.weight -= 1
 
-    def __repr__(self):
-        return "{}:w={}".format(self.value, self.weight)
+    # def __str__(self):
+    #     return self.value
 
     def __gt__(self, other):
-        return self.value > other
+        return self.value > other.value
+    #
+    # def __lt__(self, other):
+    #     return self.value < other
+    #
+    # def __ge__(self, other):
+    #     return self.value >= other
+    #
+    # def __le__(self, other):
+    #     return self.value <= other
 
-    def __lt__(self, other):
-        return self.value < other
+    def __eq__(self, other):
 
-    def __ge__(self, other):
-        return self.value >= other
+        return self.value == other
 
-    def __le__(self, other):
-        return self.value <= other
 
+class PenaltyList():
+    def __init__(self):
+        self.lst = []
+
+
+    def append(self, item):
+        self.lst.append(item)
+
+    def extend(self, iterable):
+        self.lst.extend(iterable)
+
+    def lst_values(self):
+        if self.lst:
+            return [x.value for x in self.lst]
+        return []
+
+    def __iter__(self):
+        return iter(self.lst)
+
+    def __len__(self):
+        return len(self.lst)
+
+    def __contains__(self, item):
+        return item in self.lst
+
+    def __repr__(self):
+        return str(self.lst)
 
 
 class Seq(dict):
@@ -69,7 +101,7 @@ class Seq(dict):
         else:
             self.items_weight = items_weight
         self.work_list = []
-        self.penalty_list = []
+        self.penalty_list = PenaltyList()
         self.cursor = -1
         self.update({n: Item(n) for n in seq})
 
@@ -94,7 +126,6 @@ class Seq(dict):
 
     def init_penalty_list(self):
         self.work_list.clear()
-
         self.work_list.extend(self.penalty_list)
 
     def next(self)->tuple:
@@ -167,7 +198,9 @@ class Seq(dict):
 
     def append_penalty(self, name):
         item = Item(name)
+        print(not item in self.penalty_list, 555)
         if not item in self.penalty_list and name != "FINISH":
+
             self.penalty_list.append(item)
 
     def extend_penalty(self, penalty_lst=None):
