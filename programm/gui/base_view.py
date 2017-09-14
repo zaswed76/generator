@@ -93,18 +93,16 @@ class GraphicsImage(QtWidgets.QGraphicsPixmapItem):
 
 
 class Scene(QtWidgets.QGraphicsScene):
-    def __init__(self, geometry, cfg, image_dir, parent=None):
+    def __init__(self, parent, rect):
         super().__init__()
-        self.image_dir = image_dir
-        self.cfg = cfg
         self.parent = parent
-        self.setSceneRect(*geometry)
+        print(rect, 7777)
+        self.setSceneRect(rect)
 
-    def draw(self, name, fabric):
+    def draw(self, name, path, fabric):
         self.clear()
         name = str(name)
         if fabric == 'image_mode_btn':
-            path = self.path_to_image(name)
             self.obj = GraphicsImage(path, name, self)
         elif fabric == 'text_mode_btn':
             self.obj = GraphicsText(name, self)
@@ -138,9 +136,6 @@ class Scene(QtWidgets.QGraphicsScene):
     def del_help_obj(self):
         self.removeItem(self.help_obj)
 
-    def path_to_image(self, name):
-        p = os.path.join(self.image_dir, name + self.cfg["ext"])
-        return p
 
     def mouseReleaseEvent(self, e):
         if self.obj.name != "FINISH":

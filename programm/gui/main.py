@@ -39,6 +39,10 @@ def qt_message_handler(mode, context, message):
 QtCore.qInstallMessageHandler(qt_message_handler)
 
 
+def path_to_image(self, name, image_dir, ext):
+    return os.path.join(image_dir, name + ext)
+
+
 class GameToolController(QObject):
     def __init__(self, parent, name):
         super().__init__(parent)
@@ -183,7 +187,6 @@ class ToolController(QObject):
         self.parent.stack.setCurrentWidget(self.parent.games["grid"])
 
     def alt_1(self, **args):
-        print("alt_1")
         btns_checked = self.parent.tools["game"].btns_checked_group(
             "group_seq_game")
         current_ten = [k for k, v in btns_checked.items() if v][0]
@@ -225,8 +228,8 @@ class Widget(tool.WidgetToolPanel):
         self.games = dict()
         self.controls = dict()
         # region main_view
-        self.scene = base_view.Scene((0, 0, 500, 500), self.cfg_base,
-                                     IMAGE_DIR, parent=self)
+        scene_rect = QtCore.QRectF(0, 0, 500, 500)
+        self.scene = base_view.Scene(self, scene_rect)
         self.games["base_game"] = base_view.View("base_game",
                                                  self.scene, self,
                                                  (504, 504))
@@ -458,6 +461,7 @@ class Widget(tool.WidgetToolPanel):
 
 
     def next_item(self):
+
         item, game_go_flag = self.seq.next()
         scene_items = self.current_scene.items()
         if scene_items:
@@ -466,15 +470,13 @@ class Widget(tool.WidgetToolPanel):
             scene_item = None
         if game_go_flag:
             if not self.penalty_release_flag and scene_item:
-
                 self.seq.append_penalty(scene_item)
-            self.scene.draw(item, self.current_mod)
-
+            path = os.path.join(IMAGE_DIR, item + self.cfg_base["ext"])
+            self.scene.draw(item, path, self.current_mod)
             if self.help:
                 self.draw_help()
         else:
             if not self.penalty_release_flag:
-
                 self.seq.append_penalty(scene_item)
             self.scene.draw_finish()
             if self.timer.isActive():

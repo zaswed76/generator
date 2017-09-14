@@ -44,18 +44,13 @@ class Scene(QtWidgets.QGraphicsScene):
         path = self.path_to_image(name)
         if fabric == 'image_mode_btn':
             obj = base_view.GraphicsImage(path, name, self)
-            # obj.setScale(0.19)
             obj.to_center()
             self.addItem(obj)
         elif fabric == 'text_mode_btn':
             print("fabric == text_mode_btn")
         else:
             raise Exception("нет такого режима")
-            # g = geometry[name]
-            # print(g)
-            #
-            # obj.set_geometry(g["x"], g["y"], g["scale"])
-            # # obj.set_geometry(70, 185, 0.208)
+
 
     def path_to_image(self, name):
         p = os.path.join(self.image_dir, name + self.cfg["ext"])
