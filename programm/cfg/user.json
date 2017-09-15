@@ -1,7 +1,7 @@
 {
     "base": {
-        "image_mode_btn": true,
-        "text_mode_btn": false,
+        "image_mode_btn": false,
+        "text_mode_btn": true,
         "ext": ".png",
         "tool_height": 30,
         "cycle": false,

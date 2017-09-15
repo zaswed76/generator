@@ -96,7 +96,6 @@ class Scene(QtWidgets.QGraphicsScene):
     def __init__(self, parent, rect):
         super().__init__()
         self.parent = parent
-        print(rect, 7777)
         self.setSceneRect(rect)
 
     def draw(self, name, path, fabric):
@@ -111,12 +110,11 @@ class Scene(QtWidgets.QGraphicsScene):
         self.obj.to_center()
         self.addItem(self.obj)
 
-    def draw_help(self, name, fabric):
+    def draw_help(self, name, path, fabric):
         name = str(name)
         if fabric == 'image_mode_btn':
             self.help_obj = GraphicsText(name, self)
         elif fabric == 'text_mode_btn':
-            path = self.path_to_image(name)
             self.help_obj = GraphicsImage(path, name, self)
         else:
             print("invalid mode")

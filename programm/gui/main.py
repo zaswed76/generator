@@ -499,7 +499,9 @@ class Widget(tool.WidgetToolPanel):
                 self.draw_help()
 
     def draw_help(self):
-        self.scene.draw_help(self.seq.current_item.value, self.current_mod)
+        item = self.seq.current_item.value
+        path = os.path.join(IMAGE_DIR, str(item) + self.cfg_base["ext"])
+        self.scene.draw_help(item, path, self.current_mod)
 
     def keyPressEvent(self, e):
 
@@ -560,7 +562,6 @@ class Widget(tool.WidgetToolPanel):
         self.cfg_base["alt_1_enabled"] = not alt_1_enabled
 
         penalty_list_values = [n.value for n in self.seq.penalty_list]
-        print(self.seq.penalty_list, 99999)
         self.cfg.conf["penalty_list"].clear()
         self.cfg.conf["penalty_list"].extend(penalty_list_values)
 
