@@ -4,18 +4,18 @@
         "text_mode_btn": false,
         "ext": ".png",
         "tool_height": 30,
-        "cycle": true,
+        "cycle": false,
         "cursor": 0,
         "shuffle": true,
         "game_id": 0,
-        "base_game": false,
+        "base_game": true,
         "alt_1": false,
         "help": false,
         "test": false,
         "time": false,
         "alt_1_enabled": true,
-        "grid": true,
-        "interval_slides": 3,
+        "grid": false,
+        "interval_slides": 4,
         "penalty": false
     },
     "game_tool": {
@@ -28,10 +28,10 @@
         "btn_checked": {
             "0": false,
             "10": false,
-            "20": true,
-            "30": true,
+            "20": false,
+            "30": false,
             "40": true,
-            "50": false,
+            "50": true,
             "60": false,
             "70": false,
             "80": false,
@@ -40,10 +40,6 @@
         }
     },
     "penalty_list": [
-        "44",
-        "25",
-        "47",
-        "24",
-        "31"
+        "53"
     ]
 }

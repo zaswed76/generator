@@ -200,7 +200,7 @@ class ToolController(QObject):
         self.parent.controls["seq_tool"].exclusive()
 
     def restart(self, **args):
-        self.parent.game_reset()
+        self.parent.new_game()
 
     def shuffle(self, **args):
         flag = self.parent.tools["top_tool"].btn['shuffle'].isChecked()
@@ -590,7 +590,7 @@ def save(path, obj):
 
 
 if __name__ == '__main__':
-
+    
     QtCore.qDebug('something informative')
     app = QtWidgets.QApplication(sys.argv)
     app.setStyleSheet(open('../css/style.css', "r").read())
