@@ -40,6 +40,7 @@ QtCore.qInstallMessageHandler(qt_message_handler)
 
 
 def path_to_image(self, name, image_dir, ext):
+
     return os.path.join(image_dir, name + ext)
 
 
