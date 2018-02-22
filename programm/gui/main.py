@@ -219,8 +219,12 @@ class Widget(tool.WidgetToolPanel):
     def __init__(self, *args, **kwargs):
 
         super().__init__()
+        init_game_cfg = kwargs["init_game"]
+        default_cfg = kwargs["default_cfg"]
+        self.image_dir = kwargs["image_dir"]
+        self.image_dir_key = kwargs["image_dir_key"]
 
-        self.__init_config()
+        self.__init_config(init_game_cfg, default_cfg)
         self.timer_flag = False
         self.penalty_release_flag = True
         self.timer = timer.Timer()
@@ -240,7 +244,7 @@ class Widget(tool.WidgetToolPanel):
 
         # region alt_view
         self.alt_scene = alt_view.Scene((0, 0, 500, 500),
-                                        self.cfg_base, IMAGE_DIR_KEY)
+                                        self.cfg_base, self.image_dir_key)
         self.games["alt_1"] = alt_view.View("alt_1", self.alt_scene,
                                             self, (504, 504))
         self.games["alt_1"].setInteractive(False)
@@ -249,7 +253,7 @@ class Widget(tool.WidgetToolPanel):
         # endregion
 
         self.grid = grid_view.Scene((0, 0, 500, 500),
-                                        self.cfg_base, IMAGE_DIR)
+                                        self.cfg_base, self.image_dir)
         self.games["grid"] = grid_view.View("grid", self.grid,
                                             self, (504, 504))
         self.add_view(self.games["grid"])
@@ -290,9 +294,11 @@ class Widget(tool.WidgetToolPanel):
     def __init_game(self):
         self.check_stack(self.cfg_base["game_id"])
 
-    def __init_config(self):
-        self.cfg = config.Config(DEFAULT_CFG)
-        self.init_conf = load_cfg(INIT_GAME)
+    def __init_config(self, init_game, default_cfg):
+        self.cfg = config.Config(default_cfg)
+        print(default_cfg)
+        print(self.cfg.conf)
+        self.init_conf = load_cfg(init_game)
         self.cfg.load(self.init_conf["last_cfg"])
         self.cfg_base = self.cfg.conf['base']
         self.cfg_game_tool = self.cfg.conf['game_tool']
@@ -472,7 +478,7 @@ class Widget(tool.WidgetToolPanel):
         if game_go_flag:
             if not self.penalty_release_flag and scene_item:
                 self.seq.append_penalty(scene_item)
-            path = os.path.join(IMAGE_DIR, item + self.cfg_base["ext"])
+            path = os.path.join(self.image_dir, item + self.cfg_base["ext"])
             self.scene.draw(item, path, self.current_mod)
             if self.help:
                 self.draw_help()
@@ -493,15 +499,16 @@ class Widget(tool.WidgetToolPanel):
             self.tools["top_tool"].btn["penalty"].setDisabled(True)
 
     def prev_item(self):
-        item, game_go_flag = self.seq.prev()
-        if game_go_flag:
-            self.scene.draw(item, self.current_mod)
-            if self.help:
-                self.draw_help()
+        pass
+        # item, game_go_flag = self.seq.prev()
+        # if game_go_flag:
+        #     self.scene.draw(item, self.current_mod)
+        #     if self.help:
+        #         self.draw_help()
 
     def draw_help(self):
         item = self.seq.current_item.value
-        path = os.path.join(IMAGE_DIR, str(item) + self.cfg_base["ext"])
+        path = os.path.join(self.image_dir, str(item) + self.cfg_base["ext"])
         self.scene.draw_help(item, path, self.current_mod)
 
     def keyPressEvent(self, e):
