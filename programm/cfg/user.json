@@ -8,19 +8,19 @@
         "cursor": 0,
         "shuffle": true,
         "game_id": 0,
-        "base_game": true,
-        "alt_1": false,
+        "base_game": false,
+        "alt_1": true,
         "help": false,
         "test": false,
         "time": false,
-        "alt_1_enabled": true,
+        "alt_1_enabled": false,
         "grid": false,
         "interval_slides": 4,
         "penalty": false
     },
     "game_tool": {
         "width": 35,
-        "exclusive": false,
+        "exclusive": true,
         "button_size": [
             25,
             25
@@ -32,7 +32,7 @@
             "30": false,
             "40": false,
             "50": true,
-            "60": true,
+            "60": false,
             "70": false,
             "80": false,
             "90": false,
