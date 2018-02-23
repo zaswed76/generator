@@ -13,14 +13,14 @@
         "help": false,
         "test": false,
         "time": false,
-        "alt_1_enabled": false,
+        "alt_1_enabled": true,
         "grid": false,
         "interval_slides": 4,
         "penalty": false
     },
     "game_tool": {
         "width": 35,
-        "exclusive": true,
+        "exclusive": false,
         "button_size": [
             25,
             25
@@ -30,9 +30,9 @@
             "10": false,
             "20": false,
             "30": false,
-            "40": false,
+            "40": true,
             "50": true,
-            "60": false,
+            "60": true,
             "70": false,
             "80": false,
             "90": false,
