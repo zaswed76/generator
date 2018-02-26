@@ -547,6 +547,7 @@ class Widget(tool.WidgetToolPanel):
 
     def wheelEvent(self, event):
         if event.angleDelta().y() / 120 > 0:
+            print("test")
             self.next_item()
             # self.start_flag = True
             # time = self.chenge_time()
