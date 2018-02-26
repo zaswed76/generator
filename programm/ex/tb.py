@@ -1,4 +1,18 @@
-for x in range(0, 10):
-   for y in range(0, 10):
-       print('{0} x {1} = {2}'.format(x, y, x*y),end='\t')
-   print("")
+
+import sys
+from PyQt5 import QtWidgets
+
+class Widget(QtWidgets.QWidget):
+    def __init__(self):
+        super().__init__()
+        self.resize(500, 500)
+
+    def keyReleaseEvent(self, QKeyEvent):
+        print(1)
+
+if __name__ == '__main__':
+    app = QtWidgets.QApplication(sys.argv)
+    # app.setStyleSheet(open('./etc/{0}.qss'.format('style'), "r").read())
+    main = Widget()
+    main.show()
+    sys.exit(app.exec_())

@@ -39,21 +39,56 @@ class Item:
         if self.weight > self.wmin:
             self.weight -= 1
 
-    def __repr__(self):
-        return "{}:w={}".format(self.value, self.weight)
+    # def __str__(self):
+    #     return self.value
 
     def __gt__(self, other):
-        return self.value > other
+        return self.value > other.value
+    #
+    # def __lt__(self, other):
+    #     return self.value < other
+    #
+    # def __ge__(self, other):
+    #     return self.value >= other
+    #
+    # def __le__(self, other):
+    #     return self.value <= other
 
-    def __lt__(self, other):
-        return self.value < other
+    def __eq__(self, other):
 
-    def __ge__(self, other):
-        return self.value >= other
+        return self.value == other
 
-    def __le__(self, other):
-        return self.value <= other
 
+class PenaltyList():
+    def __init__(self):
+        self.lst = []
+
+
+    def append(self, item):
+        self.lst.append(item)
+
+    def extend(self, iterable):
+        self.lst.extend(iterable)
+
+    def clear(self):
+        self.lst.clear()
+
+    def lst_values(self):
+        if self.lst:
+            return [x.value for x in self.lst]
+        return []
+
+    def __iter__(self):
+        return iter(self.lst)
+
+    def __len__(self):
+        return len(self.lst)
+
+    def __contains__(self, item):
+        return item in self.lst
+
+    def __repr__(self):
+        return str(self.lst)
 
 
 class Seq(dict):
@@ -62,12 +97,14 @@ class Seq(dict):
         self._shuffle = False
         self._cycle = False
         self._current_item = None
+        self._last_item = None
         self.game_go = False
         if items_weight is None:
             self.items_weight = dict()
         else:
             self.items_weight = items_weight
         self.work_list = []
+        self.penalty_list = PenaltyList()
         self.cursor = -1
         self.update({n: Item(n) for n in seq})
 
@@ -81,13 +118,20 @@ class Seq(dict):
 
         return lst
 
+    def clear(self):
+        self.work_list.clear()
+
+
     def init_tens(self, tens):
         self.work_list.clear()
         for ten in tens:
             self.work_list.extend(self._get_ten(ten))
 
+    def init_penalty_list(self):
+        self.work_list.clear()
+        self.work_list.extend(self.penalty_list)
 
-    def next(self):
+    def next(self)->tuple:
         self.game_go = True
         if self._cycle:
             if self.cursor == len(self.work_list) - 2:
@@ -101,6 +145,7 @@ class Seq(dict):
                 self.cursor += 1
         try:
             self._current_item = self.work_list[self.cursor]
+            self._last_item = self.work_list[self.cursor-1]
         except IndexError:
             self.game_go = False
             if self.shuffle:
@@ -117,8 +162,13 @@ class Seq(dict):
     def add_seq(self, seq):
         self.update({n: Item(n) for n in seq})
 
+    @property
     def current_item(self):
         return self._current_item
+
+    @property
+    def last_item(self):
+        return self._last_item
 
     @property
     def cycle(self):
@@ -149,8 +199,19 @@ class Seq(dict):
     def cursor_reset(self):
         self.cursor = -1
 
+    def append_penalty(self, name):
+        item = Item(name)
+        print(not item in self.penalty_list, 555)
+        if not item in self.penalty_list and name != "FINISH":
 
+            self.penalty_list.append(item)
 
+    def extend_penalty(self, penalty_lst=None):
+        penalty_item_list = [Item(x) for x in penalty_lst]
+        self.penalty_list.extend(penalty_item_list)
+
+    def clear_penalty(self):
+        self.penalty_list.clear()
 
 
 

@@ -10,13 +10,12 @@ from PyQt5.QtCore import QObject
 from logic import logic
 from gui import (base_view, config, tool,
                  game_tool, alt_view,
-                 grid_view, gui_settings)
+                 grid_view, gui_settings,
+                 timer)
 
 IMAGE_DIR = '../resource/image'
 UI_DIR = '../gui/ui'
-# IMAGE_DIR_KEY = '../resource/images_key'
 IMAGE_DIR_KEY = '../resource/images_key_2'
-# ICON_DIR = '../resource/icons'
 ICON_DIR = '../resource/icon_2'
 DEFAULT_CFG = '../cfg/default.json'
 INIT_GAME = '../cfg/init_game.json'
@@ -38,6 +37,11 @@ def qt_message_handler(mode, context, message):
     print('  %s: %s\n' % (mode, message))
 
 QtCore.qInstallMessageHandler(qt_message_handler)
+
+
+def path_to_image(self, name, image_dir, ext):
+
+    return os.path.join(image_dir, name + ext)
 
 
 class GameToolController(QObject):
@@ -144,12 +148,24 @@ class ToolController(QObject):
     def time(self, **args):
         flag = self.parent.tools["top_tool"].btn['time'].isChecked()
         if flag:
-            self.parent.timer_1 = self.parent.startTimer(2000)
+            self.parent.penalty_release_flag = False
+            time = self.parent.cfg_base["interval_slides"] * 1000
+            self.parent.start_timer(time)
+            self.parent.games["base_game"].setInteractive(True)
+
         else:
             try:
-                self.parent.killTimer(self.parent.timer_1)
+                self.parent.penalty_release_flag = True
+                self.parent.timer.stop()
+                self.parent.games["base_game"].setInteractive(False)
             except AttributeError as er:
                 print(er)
+
+    def penalty(self, **args):
+        self.parent.start_penalty_list()
+
+    def del_penalty(self, **args):
+        self.parent.clear_penalty()
 
     def check_game(self, **args):
         sender = self.sender()
@@ -172,7 +188,6 @@ class ToolController(QObject):
         self.parent.stack.setCurrentWidget(self.parent.games["grid"])
 
     def alt_1(self, **args):
-        print("alt_1")
         btns_checked = self.parent.tools["game"].btns_checked_group(
             "group_seq_game")
         current_ten = [k for k, v in btns_checked.items() if v][0]
@@ -186,7 +201,7 @@ class ToolController(QObject):
         self.parent.controls["seq_tool"].exclusive()
 
     def restart(self, **args):
-        self.parent.game_reset()
+        self.parent.new_game()
 
     def shuffle(self, **args):
         flag = self.parent.tools["top_tool"].btn['shuffle'].isChecked()
@@ -204,37 +219,48 @@ class Widget(tool.WidgetToolPanel):
     def __init__(self, *args, **kwargs):
 
         super().__init__()
+        init_game_cfg = kwargs["init_game"]
+        default_cfg = kwargs["default_cfg"]
+        self.image_dir = kwargs["image_dir"]
+        self.image_dir_key = kwargs["image_dir_key"]
 
-        self.__init_config()
+        self.__init_config(init_game_cfg, default_cfg)
         self.timer_flag = False
+        self.penalty_release_flag = True
+        self.timer = timer.Timer()
+        self.timer.timeout.connect(self.update_timer)
 
         self.games = dict()
         self.controls = dict()
         # region main_view
-        self.scene = base_view.Scene((0, 0, 500, 500), self.cfg_base,
-                                     IMAGE_DIR)
+        scene_rect = QtCore.QRectF(0, 0, 500, 500)
+        self.scene = base_view.Scene(self, scene_rect)
         self.games["base_game"] = base_view.View("base_game",
                                                  self.scene, self,
                                                  (504, 504))
+        self.games["base_game"].setInteractive(False)
         self.add_view(self.games["base_game"])
         # endregion
 
         # region alt_view
         self.alt_scene = alt_view.Scene((0, 0, 500, 500),
-                                        self.cfg_base, IMAGE_DIR_KEY)
+                                        self.cfg_base, self.image_dir_key)
         self.games["alt_1"] = alt_view.View("alt_1", self.alt_scene,
                                             self, (504, 504))
+        self.games["alt_1"].setInteractive(False)
+
         self.add_view(self.games["alt_1"])
         # endregion
 
         self.grid = grid_view.Scene((0, 0, 500, 500),
-                                        self.cfg_base, IMAGE_DIR)
+                                        self.cfg_base, self.image_dir)
         self.games["grid"] = grid_view.View("grid", self.grid,
                                             self, (504, 504))
         self.add_view(self.games["grid"])
 
         seq = range(100)
         self.seq = logic.Seq(seq)
+        self.seq.extend_penalty(self.cfg.conf["penalty_list"])
 
         self.tools = {}
         self.mode_names = ["image_mode_btn", "text_mode_btn"]
@@ -242,12 +268,19 @@ class Widget(tool.WidgetToolPanel):
         self.help = self.cfg_base["help"]
         self.set_start_opt()
 
-    def set_time(self):
-        self.set_time_window = gui_settings.set_time()
-        self.set_time_window.show()
+    @property
+    def current_scene(self) ->QtWidgets.QGraphicsScene:
+        return self.stack.currentWidget()
 
-    def timerEvent(self, *args, **kwargs):
-        self.next_item()
+    def set_time(self):
+        interval = self.cfg_base["interval_slides"]
+        self.set_time_window = gui_settings.SetTime(interval)
+        result = self.set_time_window.exec_()
+        if result == QtWidgets.QDialog.Accepted:
+            interval = self.set_time_window.slider.value()
+            self.cfg_base["interval_slides"] = interval
+        elif result == QtWidgets.QDialog.Rejected:
+            pass
 
     def set_start_opt(self):
         self.start_flag = False
@@ -261,9 +294,11 @@ class Widget(tool.WidgetToolPanel):
     def __init_game(self):
         self.check_stack(self.cfg_base["game_id"])
 
-    def __init_config(self):
-        self.cfg = config.Config(DEFAULT_CFG)
-        self.init_conf = load_cfg(INIT_GAME)
+    def __init_config(self, init_game, default_cfg):
+        self.cfg = config.Config(default_cfg)
+        print(default_cfg)
+        print(self.cfg.conf)
+        self.init_conf = load_cfg(init_game)
         self.cfg.load(self.init_conf["last_cfg"])
         self.cfg_base = self.cfg.conf['base']
         self.cfg_game_tool = self.cfg.conf['game_tool']
@@ -338,6 +373,14 @@ class Widget(tool.WidgetToolPanel):
         time.clicked.connect(self.controls["top_tool"])
         self.tools["top_tool"].add_btn(time)
 
+        penalty = tool.Button(self.tools["top_tool"], "penalty",
+                           checkable=True)
+        penalty.clicked.connect(self.controls["top_tool"])
+        del_penalty = tool.SetBtn((16, 16), name="del_penalty")
+        del_penalty.clicked.connect(self.controls["top_tool"])
+        penalty.add_setting_btn(del_penalty)
+        self.tools["top_tool"].add_btn(penalty)
+
         self.tools["top_tool"].add_stretch(1)
         # region games
         base_game = tool.Button(self.tools["top_tool"], "base_game",
@@ -373,8 +416,8 @@ class Widget(tool.WidgetToolPanel):
 
         # инициировать состояние кнопок
         for name, btn in self.tools["top_tool"].all_btns.items():
-            c = self.cfg_base.get(name, False)
             btn.setChecked(self.cfg_base.get(name, False))
+            self.tools["top_tool"].btn['time'].setChecked(False)
 
 
 
@@ -385,16 +428,28 @@ class Widget(tool.WidgetToolPanel):
         self.seq.cycle = self.tools["top_tool"].btn["cycle"].isChecked()
         btns_checked = self.tools["game"].btns_checked_group(
             "group_seq_game")
-
         btns_name = [k for k, v in btns_checked.items() if v]
-        # print(btns_name, "btn")
-
         self.seq.init_tens(btns_name)
-
-        self.seq.cursor_reset()
         self.seq.set_shuffle(self.tools["top_tool"].btn["shuffle"].isChecked())
-        self.scene.clear()
-        self.next_item()
+        self.game_reset()
+
+    def start_penalty_list(self):
+        if self.seq.penalty_list:
+            if self.tools["top_tool"].btn["penalty"].isChecked():
+                self.seq.init_penalty_list()
+                self.seq.set_shuffle(self.tools["top_tool"].btn["shuffle"].isChecked())
+                self.game_reset()
+            else:
+                self.new_game()
+
+    def clear_penalty(self):
+        self.seq.clear_penalty()
+        self.seq.clear()
+        self.new_game()
+        self.tools["top_tool"].btn["penalty"].setChecked(False)
+        self.tools["top_tool"].btn["penalty"].setDisabled(True)
+
+
 
     def game_reset(self):
         self.seq.cursor_reset()
@@ -404,34 +459,81 @@ class Widget(tool.WidgetToolPanel):
     def note_time(self):
         self.current_time = time.time()
 
+    def start_timer(self, interval):
+        self.timer.start(interval)
+
+    def update_timer(self):
+        self.penalty_release_flag = False
+        self.next_item()
+
+
     def next_item(self):
+
         item, game_go_flag = self.seq.next()
+        scene_items = self.current_scene.items()
+        if scene_items:
+            scene_item = scene_items[0].name
+        else:
+            scene_item = None
         if game_go_flag:
-            self.scene.draw(item, self.current_mod)
+            if not self.penalty_release_flag and scene_item:
+                self.seq.append_penalty(scene_item)
+            path = os.path.join(self.image_dir, item + self.cfg_base["ext"])
+            self.scene.draw(item, path, self.current_mod)
             if self.help:
                 self.draw_help()
         else:
+            if not self.penalty_release_flag:
+                self.seq.append_penalty(scene_item)
             self.scene.draw_finish()
+            if self.timer.isActive():
+                self.timer.stop()
+                self.tools["top_tool"].btn['time'].setChecked(False)
+                self.games["base_game"].setInteractive(False)
+
+        if self.seq.penalty_list:
+
+            self.tools["top_tool"].btn["penalty"].setDisabled(False)
+        else:
+
+            self.tools["top_tool"].btn["penalty"].setDisabled(True)
 
     def prev_item(self):
-        item, game_go_flag = self.seq.prev()
-        if game_go_flag:
-            self.scene.draw(item, self.current_mod)
-            if self.help:
-                self.draw_help()
+        pass
+        # item, game_go_flag = self.seq.prev()
+        # if game_go_flag:
+        #     self.scene.draw(item, self.current_mod)
+        #     if self.help:
+        #         self.draw_help()
 
     def draw_help(self):
-        self.scene.draw_help(self.seq.current_item().value, self.current_mod)
+        item = self.seq.current_item.value
+        path = os.path.join(self.image_dir, str(item) + self.cfg_base["ext"])
+        self.scene.draw_help(item, path, self.current_mod)
+
+    def keyReleaseEvent(self, e):
+        print("release")
 
     def keyPressEvent(self, e):
         if e.key() == QtCore.Qt.Key_Space:
             if not e.isAutoRepeat():
                 self.draw_help()
+            else:
+                pass
 
-    def keyReleaseEvent(self, e):
-        if e.key() == QtCore.Qt.Key_Space:
-            if not e.isAutoRepeat():
-                self.scene.del_help_obj()
+    # def keyPressEvent(self, e):
+    #     if e.key() == QtCore.Qt.Key_Space:
+    #         if not e.isAutoRepeat():
+    #             self.draw_help  ()
+
+
+
+    # def keyReleaseEvent(self, e):
+    #     print( e.key())
+    #     print(111)
+    #     # if e.key() == QtCore.Qt.Key_Space:
+    #     #     if not e.isAutoRepeat():
+    #     #         self.scene.del_help_obj()
 
     def chenge_time(self):
         current = time.time()
@@ -459,6 +561,7 @@ class Widget(tool.WidgetToolPanel):
         self.cfg.save(self.init_conf["last_cfg"])
 
     def update_cfg(self):
+        self.tools["top_tool"].btn["penalty"].setChecked(False)
         btns_checked = self.tools["game"].btns_checked_group(
             "group_seq_game")
         self.cfg_game_tool["btn_checked"].update(btns_checked)
@@ -475,6 +578,10 @@ class Widget(tool.WidgetToolPanel):
 
         alt_1_enabled = self.tools["top_tool"].groups["group_games"].btn["alt_1"].isEnabled()
         self.cfg_base["alt_1_enabled"] = not alt_1_enabled
+
+        penalty_list_values = [n.value for n in self.seq.penalty_list]
+        self.cfg.conf["penalty_list"].clear()
+        self.cfg.conf["penalty_list"].extend(penalty_list_values)
 
 
 
@@ -501,7 +608,7 @@ def save(path, obj):
 
 
 if __name__ == '__main__':
-
+    
     QtCore.qDebug('something informative')
     app = QtWidgets.QApplication(sys.argv)
     app.setStyleSheet(open('../css/style.css', "r").read())
