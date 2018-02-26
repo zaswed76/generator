@@ -511,21 +511,29 @@ class Widget(tool.WidgetToolPanel):
         path = os.path.join(self.image_dir, str(item) + self.cfg_base["ext"])
         self.scene.draw_help(item, path, self.current_mod)
 
-    def keyPressEvent(self, e):
+    def keyReleaseEvent(self, e):
+        print("release")
 
+    def keyPressEvent(self, e):
         if e.key() == QtCore.Qt.Key_Space:
             if not e.isAutoRepeat():
                 self.draw_help()
+            else:
+                pass
+
+    # def keyPressEvent(self, e):
+    #     if e.key() == QtCore.Qt.Key_Space:
+    #         if not e.isAutoRepeat():
+    #             self.draw_help  ()
+
 
 
     # def keyReleaseEvent(self, e):
-    #     print(1)
-    #
-    #     if e.key() == QtCore.Qt.Key_Space:
-    #         print("del")
-    #         if not e.isAutoRepeat():
-    #             print("del")
-    #             self.scene.del_help_obj()
+    #     print( e.key())
+    #     print(111)
+    #     # if e.key() == QtCore.Qt.Key_Space:
+    #     #     if not e.isAutoRepeat():
+    #     #         self.scene.del_help_obj()
 
     def chenge_time(self):
         current = time.time()

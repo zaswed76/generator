@@ -31,6 +31,13 @@ class View(QtWidgets.QGraphicsView):
     def wheelEvent(self, event):
         pass
 
+    # def keyReleaseEvent(self, e):
+    #     pass
+    #     # print("release")
+    #
+    # def keyPressEvent(self, e):
+    #     pass
+    #     # print("press")
 
 class Scene(QtWidgets.QGraphicsScene):
     def __init__(self, geometry, cfg, image_dir, parent=None):

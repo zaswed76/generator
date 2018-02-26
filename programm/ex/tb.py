@@ -1,7 +1,18 @@
 
+import sys
+from PyQt5 import QtWidgets
 
-from tempita import looper
-lp = looper([1, 2, 3])
+class Widget(QtWidgets.QWidget):
+    def __init__(self):
+        super().__init__()
+        self.resize(500, 500)
 
-for i in lp:
-    print(i.item)
+    def keyReleaseEvent(self, QKeyEvent):
+        print(1)
+
+if __name__ == '__main__':
+    app = QtWidgets.QApplication(sys.argv)
+    # app.setStyleSheet(open('./etc/{0}.qss'.format('style'), "r").read())
+    main = Widget()
+    main.show()
+    sys.exit(app.exec_())
