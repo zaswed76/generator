@@ -32,10 +32,10 @@
             "30": false,
             "40": false,
             "50": false,
-            "60": true,
-            "70": true,
+            "60": false,
+            "70": false,
             "80": true,
-            "90": false,
+            "90": true,
             "K": false
         }
     },

@@ -1,18 +1,27 @@
 
-import sys
-from PyQt5 import QtWidgets
+a="""Event: Newstate
+Privilege: call,all
+Channel: SIP/105-0007be79
+ChannelState: 6
+ChannelStateDesc: Up"""
 
-class Widget(QtWidgets.QWidget):
-    def __init__(self):
-        super().__init__()
-        self.resize(500, 500)
+import yaml
+#------------
 
-    def keyReleaseEvent(self, QKeyEvent):
-        print(1)
+b = """Event: RTCPSent
+Privilege: reporting,all
+To: 192.168.0.7:16429
+OurSSRC: 722615561
+SentNTP: 1319652944.0257110016
+SentRTP: 110384776
+SentPackets: 28241
+SentOctets: 4518560
+ReportBlock:
+FractionLost: 0
+CumulativeLoss: 0
+IAJitter: 0.0001
+TheirLastSR: 0
+DLSR: 65517.7580 (sec)"""
 
-if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
-    # app.setStyleSheet(open('./etc/{0}.qss'.format('style'), "r").read())
-    main = Widget()
-    main.show()
-    sys.exit(app.exec_())
+#----------------
+dct = yaml.load(b)
