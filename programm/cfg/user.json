@@ -1,10 +1,10 @@
 {
     "base": {
-        "image_mode_btn": true,
-        "text_mode_btn": false,
+        "image_mode_btn": false,
+        "text_mode_btn": true,
         "ext": ".png",
         "tool_height": 30,
-        "cycle": false,
+        "cycle": true,
         "cursor": 0,
         "shuffle": true,
         "game_id": 0,
@@ -13,14 +13,14 @@
         "help": false,
         "test": false,
         "time": false,
-        "alt_1_enabled": true,
+        "alt_1_enabled": false,
         "grid": false,
         "interval_slides": 4,
         "penalty": false
     },
     "game_tool": {
         "width": 35,
-        "exclusive": false,
+        "exclusive": true,
         "button_size": [
             25,
             25
@@ -32,8 +32,8 @@
             "30": false,
             "40": false,
             "50": false,
-            "60": true,
-            "70": true,
+            "60": false,
+            "70": false,
             "80": true,
             "90": false,
             "K": false
